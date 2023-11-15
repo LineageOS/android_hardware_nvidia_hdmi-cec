@@ -361,6 +361,13 @@ Return<void> HdmiCec::getPortInfo(getPortInfo_cb _hidl_cb) {
             .arcSupported = legacyPorts[i].arc_supported != 0,
             .physicalAddress = legacyPorts[i].physical_address
         };
+
+        // If physical address is the hard coded nvidia value, try to fetch the real address
+        // If that fails, use a hardcoded dummy value based on port index
+        if (portInfos[i].physicalAddress == 0xFFFF &&
+            mDevice->get_physical_address(mDevice, &portInfos[i].physicalAddress) < 0) {
+            portInfos[i].physicalAddress = i + 1;
+        }
     }
     _hidl_cb(portInfos);
     return Void();
