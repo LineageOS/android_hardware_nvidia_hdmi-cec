@@ -1,5 +1,5 @@
 cc_library_shared {
-    name: "android.hardware.tv.cec@1.0-impl",
+    name: "android.hardware.tv.cec@1.0-impl.nvidia",
     defaults: ["hidl_defaults"],
     vendor: true,
     relative_install_path: "hw",
