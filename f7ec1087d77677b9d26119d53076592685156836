@@ -16,6 +16,24 @@
       "message": "I\u0027d love to know why the reports address is wrong, shouldn\u0027t this be a plain ioctl to some kernel driver?",
       "revId": "f7ec1087d77677b9d26119d53076592685156836",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1324ecc7_59875db3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 14048
+      },
+      "writtenOn": "2023-12-06T22:23:40Z",
+      "side": 1,
+      "message": "If I read and infer stuff properly, nvidia\u0027s hal is using a hardcoded value for get_port_info, then generates a proper value for get_physical_address. Versus say the yukawa hal that does the same thing for both functions. Hence this workaround to just call get_physical_address if the hardcoded value is detected.",
+      "parentUuid": "81b045e3_18ee80f6",
+      "revId": "f7ec1087d77677b9d26119d53076592685156836",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ],
   "submitRequirementResults": []
