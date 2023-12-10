@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 The Android Open Source Project
+ * Copyright (C) 2023 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,6 @@
 #include <atomic>
 #include <thread>
 
-#include <android-base/file.h>
 #include <android/hardware/tv/cec/1.0/IHdmiCec.h>
 #include <hidl/Status.h>
 
@@ -73,7 +73,22 @@ struct HdmiCec : public IHdmiCec, public hidl_death_recipient {
     }
 
    private:
+    void get_physical_address(int dcctrl, uint8_t dispid);
+    bool cec_configure_logical_addr(int32_t new_addr);
+
+    std::thread dcctrl_thread;
+    std::atomic<bool> dcctrl_stop{false};
+    void dcctrl_worker();
+    std::thread cecdev_thread;
+    std::atomic<bool> cecdev_stop{false};
+    void cecdev_worker();
+    int cecdev = -1;
+
     static sp<IHdmiCecCallback> mCallback;
+    std::mutex mConnectedMutex;
+    bool mConnected = false;
+    std::mutex mPhysAddrMutex;
+    uint16_t mPhysAddr = 0xFFFF;
 };
 
 }  // namespace implementation
