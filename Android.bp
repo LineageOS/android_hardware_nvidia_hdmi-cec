@@ -1,12 +1,13 @@
-cc_library_shared {
-    name: "android.hardware.tv.cec@1.0-impl.nvidia",
+cc_binary {
+    name: "android.hardware.tv.cec@1.0-service.nvidia",
+    init_rc: ["android.hardware.tv.cec@1.0-service.nvidia.rc"],
+    vintf_fragments: ["android.hardware.tv.cec@1.0-service.nvidia.xml"],
     defaults: ["hidl_defaults"],
     vendor: true,
     relative_install_path: "hw",
     srcs: [
         "HdmiCec.cpp",
-        "HdmiCecDefault.cpp",
-        "HdmiCecPort.cpp",
+        "service.cpp",
     ],
 
     shared_libs: [

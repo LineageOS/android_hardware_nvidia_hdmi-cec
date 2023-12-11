@@ -18,11 +18,12 @@
 #define ANDROID_HARDWARE_TV_CEC_V1_0_HDMICEC_H
 
 #include <algorithm>
+#include <atomic>
+#include <thread>
 
+#include <android-base/file.h>
 #include <android/hardware/tv/cec/1.0/IHdmiCec.h>
 #include <hidl/Status.h>
-#include <hardware/hardware.h>
-#include <hardware/hdmi_cec.h>
 
 #include <hidl/MQDescriptor.h>
 namespace android {
@@ -48,7 +49,10 @@ using ::android::hardware::hidl_string;
 using ::android::sp;
 
 struct HdmiCec : public IHdmiCec, public hidl_death_recipient {
-    HdmiCec(hdmi_cec_device_t* device);
+    HdmiCec();
+    ~HdmiCec();
+    status_t registerAsSystemService();
+
     // Methods from ::android::hardware::tv::cec::V1_0::IHdmiCec follow.
     Return<Result> addLogicalAddress(CecLogicalAddress addr)  override;
     Return<void> clearLogicalAddress()  override;
@@ -63,30 +67,6 @@ struct HdmiCec : public IHdmiCec, public hidl_death_recipient {
     Return<void> enableAudioReturnChannel(int32_t portId, bool enable)  override;
     Return<bool> isConnected(int32_t portId)  override;
 
-    static void eventCallback(const hdmi_event_t* event, void* /* arg */) {
-        if (mCallback != nullptr && event != nullptr) {
-            if (event->type == HDMI_EVENT_CEC_MESSAGE) {
-                size_t length = std::min(event->cec.length,
-                        static_cast<size_t>(MaxLength::MESSAGE_BODY));
-                CecMessage cecMessage {
-                    .initiator = static_cast<CecLogicalAddress>(event->cec.initiator),
-                    .destination = static_cast<CecLogicalAddress>(event->cec.destination),
-                };
-                cecMessage.body.resize(length);
-                for (size_t i = 0; i < length; ++i) {
-                    cecMessage.body[i] = static_cast<uint8_t>(event->cec.body[i]);
-                }
-                mCallback->onCecMessage(cecMessage);
-            } else if (event->type == HDMI_EVENT_HOT_PLUG) {
-                HotplugEvent hotplugEvent {
-                    .connected = event->hotplug.connected > 0,
-                    .portId = static_cast<uint32_t>(event->hotplug.port_id)
-                };
-                mCallback->onHotplugEvent(hotplugEvent);
-            }
-        }
-    }
-
     virtual void serviceDied(uint64_t /*cookie*/,
                              const wp<::android::hidl::base::V1_0::IBase>& /*who*/) {
         setCallback(nullptr);
@@ -94,10 +74,7 @@ struct HdmiCec : public IHdmiCec, public hidl_death_recipient {
 
    private:
     static sp<IHdmiCecCallback> mCallback;
-    const hdmi_cec_device_t* mDevice;
 };
-
-extern "C" IHdmiCec* HIDL_FETCH_IHdmiCec(const char* name);
 
 }  // namespace implementation
 }  // namespace V1_0
