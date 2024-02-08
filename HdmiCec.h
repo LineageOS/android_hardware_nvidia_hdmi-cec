@@ -88,7 +88,7 @@ struct HdmiCec : public IHdmiCec, public hidl_death_recipient {
     std::mutex mConnectedMutex;
     bool mConnected = false;
     std::mutex mPhysAddrMutex;
-    uint16_t mPhysAddr = 0xFFFF;
+    uint16_t mPhysAddr = 0x7FFF;
 };
 
 }  // namespace implementation
