@@ -81,8 +81,6 @@ void HdmiCec::get_physical_address(int dcctrl, uint8_t dispid) {
             if (edid[i] == 3 && edid[i+1] == 12 && edid[i+2] == 0) {
                 mPhysAddrMutex.lock();
                 mPhysAddr = edid[i+3] << 8 | edid[i+4];
-                if (mPhysAddr > 0x7FFF)
-                    mPhysAddr = 0x7FFF;
                 mPhysAddrMutex.unlock();
                 break;
             }
@@ -278,7 +276,7 @@ Return<void> HdmiCec::clearLogicalAddress() {
  */
 Return<void> HdmiCec::getPhysicalAddress(getPhysicalAddress_cb _hidl_cb) {
     mPhysAddrMutex.lock();
-    if (mPhysAddr == 0x7FFF)
+    if (mPhysAddr == 0xFFFF)
         _hidl_cb(Result::FAILURE_UNKNOWN, mPhysAddr);
     else
         _hidl_cb(Result::SUCCESS, mPhysAddr);
