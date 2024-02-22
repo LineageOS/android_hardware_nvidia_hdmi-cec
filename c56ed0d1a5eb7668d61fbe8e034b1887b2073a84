@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6be8dde_e1a45f62",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 14048
+      },
+      "writtenOn": "2024-02-22T03:52:24Z",
+      "side": 1,
+      "message": "Verified on a foster build booting jetson_cv on a test bench with no cec support. This test case previously failed with boot loops without either the framework change or this hal workaround.",
+      "revId": "c56ed0d1a5eb7668d61fbe8e034b1887b2073a84",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
